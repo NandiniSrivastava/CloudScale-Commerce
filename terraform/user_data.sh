@@ -26,42 +26,26 @@ chmod +x /usr/local/bin/docker-compose
 mkdir -p /opt/${project_name}
 cd /opt/${project_name}
 
-# Clone the application repository (you'll need to replace this with your actual repo)
-# For now, we'll create the application files directly
+# Clone the CloudScale Commerce application repository
+git clone https://github.com/NandiniSrivastava/CloudScale-Commerce.git app
+cd app
 
-# Create package.json
-cat > package.json << 'EOF'
-{
-  "name": "cloudscale-commerce",
-  "version": "1.0.0",
-  "description": "Auto-scaling e-commerce platform",
-  "main": "server/index.js",
-  "scripts": {
-    "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build client",
-    "build:server": "esbuild server/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.js --external:express --external:ws",
-    "start": "NODE_ENV=production node dist/index.js",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.14.2"
-  },
-  "devDependencies": {
-    "tsx": "^4.6.2",
-    "esbuild": "^0.19.8",
-    "vite": "^5.0.8"
-  }
-}
-EOF
-
-# Install dependencies
-npm install
-
-# Create a simple health check endpoint
-mkdir -p server
-cat > server/health.js << 'EOF'
+# Install dependencies if package.json exists
+if [ -f "package.json" ]; then
+  npm install
+  
+  # Build the application
+  npm run build 2>/dev/null || echo "Build command not available, using development mode"
+  
+  # Start the application (try production first, fallback to development)
+  if [ -f "dist/index.js" ]; then
+    NODE_APP_COMMAND="node dist/index.js"
+  else
+    NODE_APP_COMMAND="npm run dev"
+  fi
+else
+  # Fallback: Create a simple health check endpoint
+  cat > server.js << 'EOF'
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -88,6 +72,8 @@ app.listen(port, '0.0.0.0', () => {
   console.log(`CloudScale Commerce running on port ${port}`);
 });
 EOF
+  NODE_APP_COMMAND="node server.js"
+fi
 
 # Create systemd service
 cat > /etc/systemd/system/${project_name}.service << EOF
@@ -99,7 +85,7 @@ After=network.target
 Type=simple
 User=ec2-user
 WorkingDirectory=/opt/${project_name}
-ExecStart=/usr/bin/node server/health.js
+ExecStart=/usr/bin/$NODE_APP_COMMAND
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production

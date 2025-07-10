@@ -52,10 +52,16 @@ variable "desired_instances" {
   default     = 2
 }
 
-variable "enable_self_healing_ec2" {
-  description = "Enable self-healing capabilities for EC2 instances"
-  type        = bool
-  default     = true
+variable "application_repository" {
+  description = "Git repository URL for the application code"
+  type        = string
+  default     = "https://github.com/NandiniSrivastava/CloudScale-Commerce.git"
+}
+
+variable "log_retention_days" {
+  description = "Number of days to retain CloudWatch logs"
+  type        = number
+  default     = 30
 }
 
 variable "cpu_scale_up_threshold" {
