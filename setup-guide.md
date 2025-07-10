@@ -160,6 +160,17 @@ terraform plan
 ```
 
 ### 2. Deploy Infrastructure
+
+#### Option A: Automated Deployment (Recommended)
+```bash
+# Make the deployment script executable
+chmod +x deploy.sh
+
+# Run the automated deployment
+./deploy.sh
+```
+
+#### Option B: Manual Deployment
 ```bash
 # Apply the Terraform configuration
 terraform apply

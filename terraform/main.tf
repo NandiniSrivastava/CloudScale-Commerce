@@ -317,9 +317,10 @@ resource "aws_cloudwatch_metric_alarm" "cpu_low" {
   tags = var.common_tags
 }
 
-# Self-Healing Infrastructure Module
+# Self-Healing Infrastructure Module from yashodhan271
 module "self_healing_infrastructure" {
-  source = "github.com/yashodhan271/terraform-aws-self-healing-infrastructure"
+  source = "yashodhan271/aws-self-healing-infrastructure/aws"
+  version = "1.0.0"
 
   region      = var.aws_region
   name_prefix = var.project_name
@@ -329,25 +330,6 @@ module "self_healing_infrastructure" {
 
   healing_check_interval = 5
   max_healing_attempts   = 3
-
-  tags = var.common_tags
-}
-
-# Self-Healing EC2 Module (if available in the repository)
-# Note: This might need to be adapted based on the actual module structure
-module "self_healing_ec2" {
-  source = "github.com/yashodhan271/terraform-aws-self-healing-infrastructure//modules/self-healing-ec2"
-  count  = var.enable_self_healing_ec2 ? 1 : 0
-
-  name_prefix = var.project_name
-  
-  # Auto Scaling Group configuration
-  autoscaling_group_name = aws_autoscaling_group.web.name
-  
-  # Self-healing configuration
-  drift_check_interval = 10
-  max_healing_attempts = 3
-  sns_topic_arn       = module.self_healing_infrastructure.sns_topic_arn
 
   tags = var.common_tags
 }
@@ -415,4 +397,24 @@ resource "aws_cloudwatch_dashboard" "application_dashboard" {
       }
     ]
   })
+}
+
+# SNS Topic for additional notifications
+resource "aws_sns_topic" "cloudscale_alerts" {
+  name = "${var.project_name}-alerts"
+  tags = var.common_tags
+}
+
+resource "aws_sns_topic_subscription" "email_alerts" {
+  count     = var.notification_email != "" ? 1 : 0
+  topic_arn = aws_sns_topic.cloudscale_alerts.arn
+  protocol  = "email"
+  endpoint  = var.notification_email
+}
+
+# CloudWatch Log Group for application logs
+resource "aws_cloudwatch_log_group" "application_logs" {
+  name              = "/aws/ec2/${var.project_name}"
+  retention_in_days = var.log_retention_days
+  tags              = var.common_tags
 }
