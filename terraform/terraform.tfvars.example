@@ -1,0 +1,39 @@
+# Example Terraform Variables File
+# Copy this file to terraform.tfvars and update the values
+
+# AWS Configuration
+aws_region = "ap-south-1"
+
+# Project Configuration
+project_name = "cloudscale-commerce"
+environment  = "dev"
+
+# Instance Configuration
+instance_type     = "t3.micro"
+min_instances     = 2
+max_instances     = 10
+desired_instances = 2
+
+# Auto Scaling Thresholds
+cpu_scale_up_threshold   = 70
+cpu_scale_down_threshold = 30
+
+# Self-Healing Configuration
+enable_self_healing_ec2 = true
+
+# Monitoring Configuration
+enable_detailed_monitoring = true
+notification_email        = "your-email@example.com"
+
+# Optional: Domain and SSL
+# domain_name         = "your-domain.com"
+# ssl_certificate_arn = "arn:aws:acm:ap-south-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+# Tags
+common_tags = {
+  Project     = "CloudScale Commerce"
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Owner       = "DevOps Team"
+  CostCenter  = "Engineering"
+}

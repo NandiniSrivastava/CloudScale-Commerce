@@ -2,7 +2,7 @@
 
 ## Overview
 
-CloudScale Commerce is a full-stack e-commerce application that demonstrates auto-scaling capabilities with real-time monitoring. The application features a React frontend with TypeScript, an Express.js backend, and uses Drizzle ORM with PostgreSQL for data persistence. The system includes real-time WebSocket connections for monitoring metrics and showcases AWS-style auto-scaling behavior.
+CloudScale Commerce is a comprehensive full-stack e-commerce application with AWS auto-scaling infrastructure and self-healing capabilities. The system features a React frontend with real-time monitoring dashboard, Express.js backend, and complete AWS infrastructure deployment using Terraform. The application demonstrates enterprise-grade auto-scaling, self-healing infrastructure, and real-time metrics visualization.
 
 ## User Preferences
 
@@ -64,10 +64,31 @@ Preferred communication style: Simple, everyday language.
 4. **State Management**: React Query handles caching and synchronization
 5. **UI Updates**: Components reactively update based on state changes
 
+## AWS Infrastructure & Terraform
+
+### Infrastructure Components
+- **Auto Scaling Groups**: Automatic EC2 instance scaling based on CPU thresholds
+- **Application Load Balancer**: Traffic distribution across multiple availability zones (ap-south-1a, ap-south-1b)
+- **CloudWatch Monitoring**: Real-time metrics collection and alerting
+- **Self-Healing Module**: Automated drift detection and resource recovery
+- **VPC & Networking**: Secure multi-AZ deployment with public/private subnets
+
+### Self-Healing Features
+- **Configuration Drift Detection**: Monitors and reverts unauthorized infrastructure changes
+- **Automatic Instance Recovery**: Restarts failed instances and replaces unhealthy ones
+- **Performance-Based Healing**: CPU and memory threshold monitoring with automatic remediation
+- **SNS Notifications**: Real-time alerts for scaling and healing events
+
+### Terraform Configuration
+- **Main Infrastructure**: Complete AWS resource provisioning in ap-south-1 region
+- **Self-Healing Integration**: Based on yashodhan271/terraform-aws-self-healing-infrastructure module
+- **Auto-Scaling Policies**: Scale up at 70% CPU, scale down at 30% CPU
+- **Multi-AZ Deployment**: High availability across ap-south-1a and ap-south-1b zones
+
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL database connectivity
+- **@neondatabase/serverless**: PostgreSQL database connectivity (optional for production)
 - **drizzle-orm** & **drizzle-zod**: Type-safe ORM with validation
 - **@tanstack/react-query**: Server state management
 - **chart.js**: Data visualization for monitoring charts
