@@ -115,6 +115,22 @@ export class MemStorage implements IStorage {
   }
 
   private initializeData() {
+    // Initialize default user for development
+    const defaultUser: User = {
+      id: 1,
+      username: "Nandini_Srivastava",
+      email: "nandini.srivastava2004@gmail.com",
+      password: "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi", // password123
+      firstName: "Nandini",
+      lastName: "Srivastava",
+      phone: "+1234567890",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastActive: new Date()
+    };
+    this.users.set(1, defaultUser);
+    this.currentUserId = 2; // Next user ID will be 2
+    
     // Initialize products
     const sampleProducts: InsertProduct[] = [
       {
