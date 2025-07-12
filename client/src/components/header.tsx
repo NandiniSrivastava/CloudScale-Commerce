@@ -1,9 +1,20 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Cloud, Search, ShoppingCart, User, Server } from "lucide-react";
+import { Cloud, Search, ShoppingCart, User, Server, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   onCartToggle: () => void;
@@ -21,6 +32,9 @@ interface CartItemWithProduct {
 
 export default function Header({ onCartToggle }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: cartItems = [] } = useQuery<CartItemWithProduct[]>({
     queryKey: ['/api/cart'],
@@ -28,10 +42,36 @@ export default function Header({ onCartToggle }: HeaderProps) {
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("/api/logout", {
+        method: "POST",
+      });
+    },
+    onSuccess: () => {
+      queryClient.clear();
+      toast({
+        title: "Logged out successfully",
+        description: "See you next time!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Logout failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement search functionality
     console.log('Search query:', searchQuery);
+  };
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
   };
 
   return (
@@ -76,14 +116,41 @@ export default function Header({ onCartToggle }: HeaderProps) {
                 </Badge>
               )}
             </Button>
-            
-            {/* User Profile */}
-            <div className="flex items-center space-x-2 text-sm">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="text-foreground font-medium">John Doe</span>
-            </div>
+
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative p-2">
+                  <User className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Orders
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} disabled={logoutMutation.isPending}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {logoutMutation.isPending ? "Logging out..." : "Log out"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
