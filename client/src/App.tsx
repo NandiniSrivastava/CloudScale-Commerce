@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import AuthPage from "@/pages/auth";
+import ProfilePage from "@/pages/profile";
+import OrdersPage from "@/pages/orders";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -27,6 +29,8 @@ function Router() {
         <>
           <Route path="/" component={Home} />
           <Route path="/auth" component={AuthPage} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/orders" component={OrdersPage} />
         </>
       )}
       <Route component={NotFound} />

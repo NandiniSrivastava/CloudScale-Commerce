@@ -7,6 +7,7 @@ import { Cloud, Search, ShoppingCart, User, Server, LogOut } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const { data: cartItems = [] } = useQuery<CartItemWithProduct[]>({
     queryKey: ['/api/cart'],
@@ -137,11 +139,11 @@ export default function Header({ onCartToggle }: HeaderProps) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLocation("/profile")}>
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLocation("/orders")}>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   Orders
                 </DropdownMenuItem>
