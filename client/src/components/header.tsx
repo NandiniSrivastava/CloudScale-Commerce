@@ -44,9 +44,10 @@ export default function Header({ onCartToggle }: HeaderProps) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("/api/logout", {
+      const response = await apiRequest("/api/logout", {
         method: "POST",
       });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.clear();

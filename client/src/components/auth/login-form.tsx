@@ -35,7 +35,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
-      return response;
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/me"] });
