@@ -36,7 +36,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
-      return response;
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/me"] });
