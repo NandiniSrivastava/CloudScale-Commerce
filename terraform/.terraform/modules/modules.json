@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"self_healing_infrastructure","Source":"git::https://github.com/NandiniSrivastava/terraform-aws-self-healing-infrastructure.git","Dir":".terraform/modules/self_healing_infrastructure"}]}
