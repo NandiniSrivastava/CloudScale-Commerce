@@ -50,20 +50,20 @@ output "security_group_alb_id" {
   value       = aws_security_group.alb.id
 }
 
-output "cloudwatch_dashboard_url" {
-  description = "URL to the CloudWatch dashboard"
-  value       = "https://${var.aws_region}.console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.application_dashboard.dashboard_name}"
-}
+# output "cloudwatch_dashboard_url" {
+#   description = "URL to the CloudWatch dashboard"
+#   value       = "https://${var.aws_region}.console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.application_dashboard.dashboard_name}"
+# }
 
-output "self_healing_sns_topic_arn" {
-  description = "ARN of the SNS topic for self-healing notifications"
-  value       = module.self_healing_infrastructure.sns_topic_arn
-}
+# output "self_healing_sns_topic_arn" {
+#   description = "ARN of the SNS topic for self-healing notifications"
+#   value       = module.self_healing_infrastructure.sns_topic_arn
+# }
 
-output "self_healing_dashboard_name" {
-  description = "Name of the self-healing CloudWatch dashboard"
-  value       = module.self_healing_infrastructure.dashboard_name
-}
+# output "self_healing_dashboard_name" {
+#   description = "Name of the self-healing CloudWatch dashboard"
+#   value       = module.self_healing_infrastructure.dashboard_name
+# }
 
 output "availability_zones" {
   description = "Availability zones used for deployment"

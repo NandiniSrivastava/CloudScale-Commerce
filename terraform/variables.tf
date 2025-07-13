@@ -37,19 +37,19 @@ variable "instance_type" {
 variable "min_instances" {
   description = "Minimum number of instances in Auto Scaling Group"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "max_instances" {
   description = "Maximum number of instances in Auto Scaling Group"
   type        = number
-  default     = 10
+  default     = 3
 }
 
 variable "desired_instances" {
   description = "Desired number of instances in Auto Scaling Group"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "application_repository" {
@@ -79,7 +79,7 @@ variable "cpu_scale_down_threshold" {
 variable "health_check_grace_period" {
   description = "Health check grace period for Auto Scaling Group (seconds)"
   type        = number
-  default     = 300
+  default     = 1200
 }
 
 variable "common_tags" {
@@ -121,4 +121,9 @@ variable "ssl_certificate_arn" {
   description = "ARN of SSL certificate for HTTPS (optional)"
   type        = string
   default     = ""
+}
+variable "port" {
+  description = "Port number for Node.js app"
+  type        = number
+  default     = 5000
 }
